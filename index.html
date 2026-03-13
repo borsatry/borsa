@@ -140,24 +140,32 @@
 
 <script>
     async function updateDashboard() {
-        try {
-            const currRes = await fetch('https://open.er-api.com/v6/latest/USD');
-            const currData = await currRes.json();
-            const tryRate = currData.rates.TRY;
-            document.getElementById('usd-try').innerText = tryRate.toFixed(2) + " TL";
-            
-            const goldGram = (2150 / 31.1035) * tryRate;
-            document.getElementById('gold-price').innerText = Math.round(goldGram).toLocaleString('tr-TR') + " TL";
+    try {
+        const currRes = await fetch('https://open.er-api.com/v6/latest/USD');
+        const currData = await currRes.json();
+        
+        const tryRate = currData.rates.TRY;
+        const eurRateInUsd = currData.rates.EUR; // Сколько EUR в 1 USD
+        
+        // Расчеты
+        const usdTry = tryRate;
+        const eurTry = tryRate / eurRateInUsd; // Курс EUR к TRY
+        const eurUsd = 1 / eurRateInUsd;       // Кросс-курс EUR к USD
 
-            const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-            const btcData = await btcRes.json();
-            document.getElementById('btc-price').innerText = "$" + btcData.bitcoin.usd.toLocaleString();
+        document.getElementById('usd-try').innerText = usdTry.toFixed(2) + " TL";
+        document.getElementById('eur-try').innerText = eurTry.toFixed(2) + " TL";
+        document.getElementById('eur-usd').innerText = eurUsd.toFixed(4); // Кросс-курсы обычно до 4 знаков
+        
+        // Золото и остальное
+        const goldGram = (2150 / 31.1035) * tryRate;
+        document.getElementById('gold-price').innerText = Math.round(goldGram).toLocaleString('tr-TR') + " TL";
 
-            const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current_weather=true');
-            const weatherData = await weatherRes.json();
-            document.getElementById('temp').innerText = Math.round(weatherData.current_weather.temperature) + "°C";
-        } catch (e) { console.error("Veri hatası:", e); }
-    }
+        const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+        const btcData = await btcRes.json();
+        document.getElementById('btc-price').innerText = "$" + btcData.bitcoin.usd.toLocaleString();
+
+    } catch (e) { console.error("Veri hatası:", e); }
+}
 
     async function fetchTurkishNews() {
         const newsContainer = document.getElementById('news-container');
