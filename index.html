@@ -137,74 +137,39 @@
 
     function quickCalc() {
         const amt = document.getElementById('loanAmount').value;
-        if(amt) {
-            const res = amt * 1.35; // Упрощенно
-            document.getElementById('quick-res').innerText = "Geri Ödeme: " + Math.round(res).toLocaleString() + " TL";
+        iasync function fetchTurkishNews() {
+    const newsContainer = document.getElementById('news-container');
+    // Используем RSS-канал крупнейшей экономической газеты Турции Dünya
+    const rssUrl = 'https://www.dunya.com/rss';
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        
+        if (data.status === 'ok') {
+            newsContainer.innerHTML = ''; // Очищаем заглушки
+            
+            // Берем первые 5 новостей
+            data.items.slice(0, 5).forEach(item => {
+                const newsHtml = `
+                    <div class="news-card">
+                        <a href="${item.link}" target="_blank" class="news-title">${item.title}</a>
+                        <small class="text-muted">${new Date(item.pubDate).toLocaleTimeString('tr-TR')} - Dünya Gazetesi</small>
+                    </div>
+                `;
+                newsContainer.insertAdjacentHTML('beforeend', newsHtml);
+            });
         }
+    } catch (error) {
+        console.error("Haberler yüklenemedi:", error);
+        newsContainer.innerHTML = '<p class="text-danger small">Haberler şu an yüklenemiyor.</p>';
     }
+}
+
+// Вызови её при загрузке
+fetchTurkishNews();
 <script>
-    // 1. Функция для получения новостей
-    async function fetchTurkishNews() {
-        const newsContainer = document.getElementById('news-container');
-        const rssUrl = 'https://www.dunya.com/rss';
-        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            
-            if (data.status === 'ok') {
-                newsContainer.innerHTML = ''; // Удаляем старые заголовки
-                data.items.slice(0, 5).forEach(item => {
-                    const newsHtml = `
-                        <div class="news-card">
-                            <a href="${item.link}" target="_blank" class="news-title">${item.title}</a>
-                            <small class="text-muted">${new Date(item.pubDate).toLocaleTimeString('tr-TR')} - Dünya Gazetesi</small>
-                        </div>
-                    `;
-                    newsContainer.insertAdjacentHTML('beforeend', newsHtml);
-                });
-            }
-        } catch (error) {
-            console.error("Haber hatası:", error);
-        }
-    }
-
-    // 2. Функция обновления курсов (твоя старая)
-    async function updateDashboard() {
-        try {
-            const currRes = await fetch('https://open.er-api.com/v6/latest/USD');
-            const currData = await currRes.json();
-            const tryRate = currData.rates.TRY;
-            document.getElementById('usd-try').innerText = tryRate.toFixed(2) + " TL";
-            
-            const goldGram = (2150 / 31.1035) * tryRate;
-            document.getElementById('gold-price').innerText = Math.round(goldGram).toLocaleString('tr-TR') + " TL";
-
-            const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-            const btcData = await btcRes.json();
-            document.getElementById('btc-price').innerText = "$" + btcData.bitcoin.usd.toLocaleString();
-
-            const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current_weather=true');
-            const weatherData = await weatherRes.json();
-            document.getElementById('temp').innerText = Math.round(weatherData.current_weather.temperature) + "°C";
-        } catch (e) { console.log(e); }
-    }
-
-    // 3. Функция калькулятора (твоя старая)
-    function quickCalc() {
-        const amt = document.getElementById('loanAmount').value;
-        if(amt) {
-            const res = amt * 1.35; 
-            document.getElementById('quick-res').innerText = "Geri Ödeme: " + Math.round(res).toLocaleString() + " TL";
-        }
-    }
-
-    // ЗАПУСК ВСЕГО ПРИ ЗАГРУЗКЕ
-    updateDashboard();
-    fetchTurkishNews(); // Запускаем новости
-    setInterval(updateDashboard, 300000); 
-    setInterval(fetchTurkishNews, 600000); // Обновляем новости каждые 10 минут
 </script>
     updateDashboard();
     setInterval(updateDashboard, 300000);
