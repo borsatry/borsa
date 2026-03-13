@@ -13,7 +13,7 @@
         .card { border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .val-text { font-size: 1.5rem; font-weight: 800; }
         .news-card { border-left: 4px solid #1e3c72; margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px; }
-        .news-title { font-weight: bold; color: #2d3436; text-decoration: none; display: block; }
+        .news-title { font-weight: bold; color: #2d3436; text-decoration: none; display: block; font-size: 0.95rem; }
         .news-title:hover { color: #1e3c72; }
         #chart-container { height: 400px; }
     </style>
@@ -23,7 +23,7 @@
 <div class="header-section text-center">
     <div class="container">
         <h1>BorsaTR</h1>
-        <p>Canlı Veriler и Finans Haberleri</p>
+        <p>Canlı Veriler ve Finans Haberleri</p>
     </div>
 </div>
 
@@ -88,33 +88,25 @@
             <div class="card p-3">
                 <h5 class="mb-3"><i class="fas fa-newspaper me-2"></i>Son Haberler</h5>
                 <div id="news-container">
-                    <div class="news-card">
-                        <a href="#" class="news-title">TCMB Faiz Kararı Bekleniyor</a>
-                        <small class="text-muted">10 dakika önce</small>
-                    </div>
-                    <div class="news-card">
-                        <a href="#" class="news-title">Bitcoin 100k Yolunda</a>
-                        <small class="text-muted">1 saat önce</small>
-                    </div>
-                    <div class="news-card">
-                        <a href="#" class="news-title">Altın Fiyatlarında Rekor Seviye</a>
-                        <small class="text-muted">2 saat önce</small>
-                    </div>
+                    <p class="small text-muted text-center">Haberler yükleniyor...</p>
                 </div>
             </div>
             
-            <div class="card p-3">
+            <div class="card p-4">
                 <h5><i class="fas fa-calculator me-2"></i>Hızlı Kredi</h5>
-                <input type="number" id="loanAmount" class="form-control mb-2" placeholder="Tutar">
-                <button onclick="quickCalc()" class="btn btn-primary btn-sm w-100">Hesapla</button>
-                <div id="quick-res" class="mt-2 small fw-bold text-center"></div>
+                <hr>
+                <div class="mb-2">
+                    <label class="small fw-bold">Tutar (TL)</label>
+                    <input type="number" id="loanAmount" class="form-control" placeholder="Örn: 50000">
+                </div>
+                <button onclick="quickCalc()" class="btn btn-primary w-100">Hesapla</button>
+                <div id="quick-res" class="mt-3 p-2 rounded bg-light text-center fw-bold d-none"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Тот же скрипт обновления данных, что и раньше
     async function updateDashboard() {
         try {
             const currRes = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -132,47 +124,52 @@
             const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current_weather=true');
             const weatherData = await weatherRes.json();
             document.getElementById('temp').innerText = Math.round(weatherData.current_weather.temperature) + "°C";
-        } catch (e) { console.log(e); }
+        } catch (e) { console.error("Veri hatası:", e); }
+    }
+
+    async function fetchTurkishNews() {
+        const newsContainer = document.getElementById('news-container');
+        const rssUrl = 'https://www.dunya.com/rss';
+        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            if (data.status === 'ok') {
+                newsContainer.innerHTML = '';
+                data.items.slice(0, 5).forEach(item => {
+                    const newsHtml = `
+                        <div class="news-card">
+                            <a href="${item.link}" target="_blank" class="news-title">${item.title}</a>
+                            <small class="text-muted">${new Date(item.pubDate).toLocaleTimeString('tr-TR')} - Dünya</small>
+                        </div>`;
+                    newsContainer.insertAdjacentHTML('beforeend', newsHtml);
+                });
+            }
+        } catch (error) {
+            newsContainer.innerHTML = '<p class="text-danger small">Haberler alınamadı.</p>';
+        }
     }
 
     function quickCalc() {
         const amt = document.getElementById('loanAmount').value;
-        iasync function fetchTurkishNews() {
-    const newsContainer = document.getElementById('news-container');
-    // Используем RSS-канал крупнейшей экономической газеты Турции Dünya
-    const rssUrl = 'https://www.dunya.com/rss';
-    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-
-    try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        
-        if (data.status === 'ok') {
-            newsContainer.innerHTML = ''; // Очищаем заглушки
-            
-            // Берем первые 5 новостей
-            data.items.slice(0, 5).forEach(item => {
-                const newsHtml = `
-                    <div class="news-card">
-                        <a href="${item.link}" target="_blank" class="news-title">${item.title}</a>
-                        <small class="text-muted">${new Date(item.pubDate).toLocaleTimeString('tr-TR')} - Dünya Gazetesi</small>
-                    </div>
-                `;
-                newsContainer.insertAdjacentHTML('beforeend', newsHtml);
-            });
+        const resBox = document.getElementById('quick-res');
+        if(amt > 0) {
+            const res = amt * 1.40; // Пример: +40% переплаты
+            resBox.innerText = "Geri Ödeme: " + Math.round(res).toLocaleString('tr-TR') + " TL";
+            resBox.classList.remove('d-none');
+        } else {
+            alert("Lütfen geçerli bir tutar girin.");
         }
-    } catch (error) {
-        console.error("Haberler yüklenemedi:", error);
-        newsContainer.innerHTML = '<p class="text-danger small">Haberler şu an yüklenemiyor.</p>';
     }
-}
 
-// Вызови её при загрузке
-fetchTurkishNews();
-<script>
-</script>
+    // Запуск функций
     updateDashboard();
+    fetchTurkishNews();
+    
+    // Обновление раз в 5 минут
     setInterval(updateDashboard, 300000);
+    setInterval(fetchTurkishNews, 300000);
 </script>
 
 </body>
