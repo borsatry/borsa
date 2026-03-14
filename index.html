@@ -7,7 +7,7 @@
     <meta name="keywords" content="borsa, canlı borsa, dolar kuru, euro fiyatı, gram altın, bitcoin grafik, kâr hesaplama, anlık veriler">
     <meta name="author" content="BorsaTR">
     <meta property="og:title" content="BorsaTR | Canlı Finans Verileri">
-    <meta property="og:description" content="Anlık borsa, döviz и altın verilerini takip edin.">
+    <meta property="og:description" content="Anlık borsa, döviz ve altın verilerini takip edin.">
     <title>BorsaTR | Finans, Grafik ve Haberler</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -29,9 +29,11 @@
         .val-text { font-size: 1.3rem; font-weight: 800; }
         .news-card { border-left: 4px solid var(--main-blue); margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.03); border-radius: 0 10px 10px 0; }
         #chart-container { height: 400px; border-radius: 15px; overflow: hidden; }
+        marquee { vertical-align: middle; }
     </style>
 </head>
 <body>
+
 <nav class="navbar navbar-expand navbar-dark bg-dark py-1">
     <div class="container justify-content-center">
         <div class="navbar-nav">
@@ -40,6 +42,7 @@
         </div>
     </div>
 </nav>
+
 <div class="tradingview-widget-container">
   <div class="tradingview-widget-container__widget"></div>
   <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
@@ -62,28 +65,29 @@
 
 <div class="header-section text-center">
     <div class="container">
-        <h1>BorsaTR</h1>
-        <div class="container mb-4">
-    <div class="card border-primary shadow-sm">
-        <div class="card-body py-2">
-            <div class="d-flex align-items-center">
-                <span class="badge bg-primary me-3">Günün Özeti</span>
-                <marquee id="daily-summary" class="small fw-bold text-muted">
-                    Piyasalar açıldı: Dolar bugün stabil, Altın hafif yükselişle başladı. BIST 100 endeksi pozitif seyrediyor.
-                </marquee>
+        <h1 class="display-4 fw-bold">BorsaTR</h1>
+        
+        <div class="container mt-4 mb-3">
+            <div class="card border-0 shadow-lg" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
+                <div class="card-body py-2">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-warning text-dark me-3">Günün Özeti</span>
+                        <marquee id="daily-summary" class="small fw-bold text-white">
+                            Veriler yükleniyor, piyasa analizi hazırlanıyor...
+                        </marquee>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-        <button id="theme-toggle" class="btn btn-outline-light btn-sm mt-2">
+
+        <button id="theme-toggle" class="btn btn-outline-light btn-sm me-2">
             <i class="fas fa-moon"></i> <span id="theme-text">Koyu Tema</span>
         </button>
+        
+        <button id="notify-btn" class="btn btn-warning btn-sm">
+            <i class="fas fa-bell"></i> Bildirimleri Aç
+        </button>
     </div>
-</div>
-    <div class="text-center mb-4">
-    <button id="notify-btn" class="btn btn-sm btn-warning rounded-pill px-4">
-        <i class="fas fa-bell me-2"></i> Önemli fiyat değişimlerinden haberdar ol
-    </button>
 </div>
 
 <div class="container">
@@ -117,12 +121,12 @@
                     <div class="col-7"><input type="number" id="convertAmount" class="form-control" placeholder="Miktar" oninput="convertCurrency()"></div>
                     <div class="col-5">
                         <select id="fromCurrency" class="form-select" onchange="convertCurrency()">
-                        <option value="TRY">TRY (Türk Lirası)</option>
-                        <option value="USD">USD (Amerikan Doları)</option>
-                        <option value="XAU">Gram Altın (24 Ayar)</option>
-                        <option value="BILEZIK22">22 Ayar Bilezik (Gram)</option>
-                        <option value="CEYREK">Çeyrek Altın (Adet)</option>
-                        <option value="ATA">Ata Altın (Adet)</option>
+                            <option value="TRY">TRY (Türk Lirası)</option>
+                            <option value="USD">USD (Amerikan Doları)</option>
+                            <option value="XAU">Gram Altın (24 Ayar)</option>
+                            <option value="BILEZIK22">22 Ayar Bilezik (Gram)</option>
+                            <option value="CEYREK">Çeyrek Altın (Adet)</option>
+                            <option value="ATA">Ata Altın (Adet)</option>
                         </select>
                     </div>
                 </div>
@@ -142,7 +146,7 @@
                         <input type="number" id="investAmount" class="form-control" placeholder="Örn: 0.1">
                     </div>
                 </div>
-                <button onclick="calculateProfit()" class="btn btn-success w-100 mt-3">Hesapla</button>
+                <button onclick="calculateProfit()" class="btn btn-success w-100 mt-3 text-white fw-bold">Hesapla</button>
                 <div id="profit-res" class="mt-3 p-3 rounded text-center fw-bold d-none"></div>
             </div>
         </div>
@@ -157,68 +161,24 @@
         </div>
     </div>
 </div>
+
 <footer class="mt-5 pb-5">
     <div class="container">
-        <div class="card p-4 shadow-sm">
+        <div class="card p-4 shadow-sm text-center">
             <h2 class="h5 fw-bold text-primary">BorsaTR: Canlı Borsa ve Finansal Takip Platformu</h2>
-            <p class="small text-muted" style="line-height: 1.6;">
-                BorsaTR, Türkiye'deki yatırımcılar için geliştirilmiş kapsamlı bir <strong>canlı borsa</strong> ve finans takip platformudur. 
-                Amacımız, kullanıcılara <strong>anlık döviz kurları</strong>, gram altın fiyatları ve kripto para verilerini en hızlı şekilde sunmaktır. 
-                Sayfamızda yer alan <strong>Bitcoin canlı grafik</strong> ve altın analiz araçları sayesinde piyasaların nabzını tutabilirsiniz.
+            <p class="small text-muted px-lg-5">
+                BorsaTR, Türkiye'deki yatırımcılar için geliştirilmiş kapsamlı bir canlı borsa platformudur. 
+                Anlık döviz kurları, gram altın ve kripto verilerini takip edin.
             </p>
-            <p class="small text-muted" style="line-height: 1.6;">
-                Sadece veri takibiyle kalmayıp, sunduğumuz <strong>döviz çevirici</strong> ve özel <strong>kâr hesaplama</strong> araçları ile yatırımlarınızın getirisini saniyeler içinde analiz edebilirsiniz. 
-                Borsa İstanbul (BIST 100) verilerinden küresel piyasalara kadar her türlü finansal bilgiye tek bir tıkla ulaşın. 
-                BorsaTR, gece moduna (Dark Mode) uyumlu yapısıyla günün her saatinde konforlu bir okuma deneyimi sunar.
-            </p>
-            <div class="text-center mt-3">
+            <div class="mt-2">
                 <span class="badge bg-light text-dark border me-1">#CanlıBorsa</span>
                 <span class="badge bg-light text-dark border me-1">#DolarKuru</span>
-                <span class="badge bg-light text-dark border me-1">#AltınFiyatları</span>
                 <span class="badge bg-light text-dark border">#BitcoinAnaliz</span>
             </div>
         </div>
         <p class="text-center mt-4 small text-muted">&copy; 2026 BorsaTR - Tüm Hakları Saklıdır.</p>
     </div>
 </footer>
-    <section class="container mt-5 mb-5">
-    <div class="row">
-        <div class="col-12">
-            <div class="card p-4">
-                <h3 class="mb-4 text-center fw-bold"><i class="fas fa-book-open me-2 text-primary"></i>Finans Bilgi Merkezi</h3>
-                <div class="accordion accordion-flush" id="seoAccordion">
-                    
-                    <div class="accordion-item bg-transparent">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed fw-bold text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#art1">
-                                Canlı Borsa: Piyasaları Anlık Takip Etmenin Önemi
-                            </button>
-                        </h2>
-                        <div id="art1" class="accordion-collapse collapse" data-bs-parent="#seoAccordion">
-                            <div class="accordion-body small text-muted">
-                                <strong>Canlı borsa</strong> takibi, günümüz finans dünyasında hem profesyonel hem de bireysel yatırımcılar için başarının anahtarıdır. Piyasalar saniyeler içinde değişebilir ve bu değişimleri anlık olarak izlemek, doğru zamanda karar vermenizi sağlar... (и так далее для каждой статьи)
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item bg-transparent">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed fw-bold text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#art2">
-                                Anlık Döviz Kuru: USD/TRY ve Global Piyasalar
-                            </button>
-                        </h2>
-                        <div id="art2" class="accordion-collapse collapse" data-bs-parent="#seoAccordion">
-                            <div class="accordion-body small text-muted">
-                                Türkiye ekonomisinde <strong>anlık döviz kuru</strong> takibi, sadece yatırımcılar için değil, günlük ekonomik planlama yapan herkes için kritiktir...
-                            </div>
-                        </div>
-                    </div>
-                    
-                    </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -249,7 +209,7 @@
         loadChart(theme, symbol);
     }
 
-    // Данные
+    // Обновление данных
     async function updateDashboard() {
         try {
             const res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -265,11 +225,16 @@
 
             const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
             const btcData = await btcRes.json();
-            document.getElementById('btc-price').innerText = "$" + btcData.bitcoin.usd.toLocaleString();
+            const btcPrice = btcData.bitcoin.usd;
+            document.getElementById('btc-price').innerText = "$" + btcPrice.toLocaleString();
+
+            // Динамический "Günün Özeti"
+            const summary = document.getElementById('daily-summary');
+            summary.innerText = `Piyasa Analizi: Dolar ${data.rates.TRY.toFixed(2)} TL bandında. Gram Altın ${Math.round(goldGram)} TL ile işlem görüyor. Bitcoin ${btcPrice.toLocaleString()}$ seviyesinde hareketli. Yatırım tavsiyesi değildir.`;
+
         } catch (e) { console.error("API Hatası:", e); }
     }
 
-    // Конвертер
     // Конвертер
     function convertCurrency() {
         const amount = document.getElementById('convertAmount').value;
@@ -282,8 +247,6 @@
             const gramGoldTry = goldPriceInUsd * usdToTry;
 
             let finalValue = 0;
-            let suffix = " TL";
-
             switch(from) {
                 case "TRY": finalValue = amount; break;
                 case "USD": finalValue = amount * usdToTry; break;
@@ -292,18 +255,15 @@
                 case "BILEZIK22": finalValue = amount * (gramGoldTry * 0.916); break; 
                 case "ATA": finalValue = amount * (gramGoldTry * 7.21); break;
             }
-
-            resultField.innerText = "Sonuç: " + finalValue.toLocaleString('tr-TR', {maximumFractionDigits: 2}) + suffix;
-        } else { 
-            resultField.innerText = ""; 
-        }
-    } // <-- Вот эта скобка была пропущена
+            resultField.innerText = "Sonuç: " + finalValue.toLocaleString('tr-TR', {maximumFractionDigits: 2}) + " TL";
+        } else { resultField.innerText = ""; }
+    }
 
     // Калькулятор прибыли
     function calculateProfit() {
         const buy = parseFloat(document.getElementById('buyPrice').value);
         const amount = parseFloat(document.getElementById('investAmount').value);
-        const currentStr = document.getElementById('btc-price').innerText.replace('$', '').replace(/\s/g, '').replace(',', '');
+        const currentStr = document.getElementById('btc-price').innerText.replace('$', '').replace(/\./g, '').replace(',', '');
         const current = parseFloat(currentStr);
         const resBox = document.getElementById('profit-res');
         
@@ -312,11 +272,11 @@
             const percent = ((current - buy) / buy) * 100;
             resBox.classList.remove('d-none', 'bg-danger', 'bg-success');
             resBox.classList.add(profit >= 0 ? 'bg-success' : 'bg-danger', 'text-white');
-            resBox.innerHTML = `Kâr/Zarar: ${profit.toLocaleString('tr-TR')} USD <br>Değişim: %${percent.toFixed(2)}`;
+            resBox.innerHTML = `Kâr/Zarar: ${profit.toLocaleString('tr-TR', {maximumFractionDigits: 2})} USD <br>Değişim: %${percent.toFixed(2)}`;
         } else { alert("Lütfen tüm alanları doldurun."); }
     }
 
-    // Переключатель темы
+    // Тема
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.addEventListener('click', () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -327,7 +287,25 @@
         loadChart(newTheme);
     });
 
-    // Инициализация
+    // Уведомления
+    document.getElementById('notify-btn').addEventListener('click', function() {
+        if (!("Notification" in window)) {
+            alert("Bu tarayıcı bildirimleri desteklemiyor.");
+        } else if (Notification.permission === "granted") {
+            alert("Bildirimler zaten açık! Önemli değişimlerde size haber vereceğiz.");
+        } else {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("BorsaTR", {
+                        body: "Bildirimler açıldı! Önemli finansal değişimleri buradan takip edebilirsiniz.",
+                        icon: "https://cdn-icons-png.flaticon.com/512/2538/2538028.png"
+                    });
+                }
+            });
+        }
+    });
+
+    // Старт
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     loadChart(savedTheme);
