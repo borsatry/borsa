@@ -86,7 +86,29 @@
         </div>
     </div>
 </div>
-
+<div class="card p-4 mt-3">
+    <h5><i class="fas fa-sync-alt me-2 text-info"></i>Döviz ve Altın Çevirici</h5>
+    <hr>
+    <div class="input-group mb-2">
+        <input type="number" id="convertAmount" class="form-control" placeholder="Miktar" oninput="convertCurrency()">
+        <select id="fromCurrency" class="form-select" onchange="convertCurrency()">
+            <option value="TRY" selected>TRY</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="XAU">Gram Altın</option>
+        </select>
+    </div>
+    <div class="text-center my-2"><i class="fas fa-arrow-down text-muted"></i></div>
+    <div class="input-group">
+        <input type="text" id="resultAmount" class="form-control" readonly placeholder="Sonuç">
+        <select id="toCurrency" class="form-select" onchange="convertCurrency()">
+            <option value="XAU">Gram Altın</option>
+            <option value="USD" selected>USD</option>
+            <option value="EUR">EUR</option>
+            <option value="TRY">TRY</option>
+        </select>
+    </div>
+</div>
     <div class="row">
         <div class="col-lg-8">
             <div class="card p-3">
@@ -237,14 +259,27 @@ function convertCurrency() {
     const to = document.getElementById('toCurrency').value;
     const resultField = document.getElementById('resultAmount');
 
-    if (amount > 0 && currentRates[from] && currentRates[to]) {
-        // Логика: переводим в USD, затем из USD в целевую валюту
-        const amountInUsd = amount / currentRates[from];
-        const result = amountInUsd * currentRates[to];
-        resultField.value = result.toLocaleString('tr-TR', { maximumFractionDigits: 2 });
+    if (amount > 0 && currentRates['TRY']) {
+        // Рассчитываем цену грамма золота в USD для конвертации
+        // (Цена унции 2150 / 31.1035)
+        const goldPriceInUsd = 2150 / 31.1035;
+        
+        // Создаем временный объект курсов, включая золото
+        const ratesWithGold = {
+            ...currentRates,
+            "XAU": 1 / goldPriceInUsd // Сколько "единиц золота" в 1 долларе
+        };
+
+        const amountInUsd = amount / ratesWithGold[from];
+        const result = amountInUsd * ratesWithGold[to];
+        
+        // Форматирование: для золота даем 4 знака после запятой, для валют — 2
+        const decimals = (to === 'XAU' || from === 'XAU') ? 4 : 2;
+        resultField.value = result.toLocaleString('tr-TR', { maximumFractionDigits: decimals });
     } else {
         resultField.value = "";
     }
+}
     function quickCalc() {
         const amt = document.getElementById('loanAmount').value;
         const resBox = document.getElementById('quick-res');
