@@ -18,12 +18,12 @@
             --card-bg: #1e1e1e;
             --text-color: #e0e0e0;
         }
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; transition: 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; }
         .blog-header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 3rem 0; margin-bottom: 2rem; }
         .card { background-color: var(--card-bg); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; transition: 0.3s; }
         .card:hover { transform: translateY(-5px); }
-        .article-link { text-decoration: none; color: inherit; }
         .badge-category { position: absolute; top: 15px; left: 15px; }
+        footer { margin-top: auto; }
     </style>
 </head>
 <body>
@@ -40,7 +40,7 @@
 <header class="blog-header text-center">
     <div class="container">
         <h1 class="fw-bold">Finans Rehberi</h1>
-        <p class="lead">Yatırımlarınızı bilinçli yönetmeniz için uzman analizleri и rehberler.</p>
+        <p class="lead text-white-50">Yatırımlarınızı bilinçli yönetmeniz için uzman analizleri ve rehberler.</p>
     </div>
 </header>
 
@@ -54,12 +54,10 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title fw-bold text-primary">2026 Yılında Altın Fiyatları Ne Olur?</h5>
-                    <p class="card-text small text-muted">Gram altın ve çeyrek altın için uzmanların 2026 yılı beklentileri ve kritik seviyeler...</p>
+                    <p class="card-text small text-muted">Gram altın ve çeyrek altın için uzmanların 2026 yılı beklentileri...</p>
                     <a href="blog/altin-fiyatlari-2026.html" class="btn btn-outline-primary btn-sm stretched-link">Devamını Oku</a>
                 </div>
-                <div class="card-footer bg-transparent border-0 small text-muted">
-                    <i class="far fa-calendar-alt me-1"></i> Mart 2026
-                </div>
+                <div class="card-footer bg-transparent border-0 small text-muted">Mart 2026</div>
             </div>
         </div>
 
@@ -67,16 +65,14 @@
             <div class="card h-100">
                 <div class="position-relative">
                     <img src="https://images.unsplash.com/photo-1611974717483-9b25036106c7?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Halka Arz">
-                    <span class="badge bg-success badge-category">Eğitim</span>
+                    <span class="badge bg-success badge-category text-white">Eğitim</span>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title fw-bold text-primary">Halka Arz Rehberi: Nasıl Katılınır?</h5>
-                    <p class="card-text small text-muted">Yeni başlayanlar için borsada halka arzlara katılma rehberi ve dikkat edilmesi gerekenler...</p>
-                    <a href="#" class="btn btn-outline-primary btn-sm">Yakında</a>
+                    <p class="card-text small text-muted">Borsada yeni halka arzlara katılma rehberi ve dikkat edilmesi gerekenler...</p>
+                    <a href="blog/halka-arz-rehberi.html" class="btn btn-outline-primary btn-sm stretched-link">Devamını Oku</a>
                 </div>
-                <div class="card-footer bg-transparent border-0 small text-muted">
-                    <i class="far fa-calendar-alt me-1"></i> Mart 2026
-                </div>
+                <div class="card-footer bg-transparent border-0 small text-muted">Mart 2026</div>
             </div>
         </div>
 
@@ -84,22 +80,20 @@
             <div class="card h-100">
                 <div class="position-relative">
                     <img src="https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Bitcoin">
-                    <span class="badge bg-info badge-category">Kripto</span>
+                    <span class="badge bg-info badge-category text-white">Kripto</span>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title fw-bold text-primary">Bitcoin 100.000 Dolar Yolunda mı?</h5>
-                    <p class="card-text small text-muted">Kripto para piyasalarında büyük ralli beklentisi. BTC için destek и direnç noktaları...</p>
-                    <a href="blog/halka-arz-rehberi.html" class="btn btn-outline-primary btn-sm">Devamını Oku</a>
+                    <p class="card-text small text-muted">Kripto para piyasalarında büyük ralli beklentisi. BTC için yeni hedefler...</p>
+                    <a href="blog/bitcoin-analizi-2026.html" class="btn btn-outline-primary btn-sm stretched-link">Devamını Oku</a>
                 </div>
-                <div class="card-footer bg-transparent border-0 small text-muted">
-                    <i class="far fa-calendar-alt me-1"></i> Mart 2026
-                </div>
+                <div class="card-footer bg-transparent border-0 small text-muted">Mart 2026</div>
             </div>
         </div>
     </div>
 </div>
 
-<footer class="text-center py-4 bg-dark text-white mt-auto">
+<footer class="text-center py-4 bg-dark text-white">
     <div class="container">
         <p class="mb-0 small">&copy; 2026 BorsaTR - Bilgi Paylaştıkça Çoğalır.</p>
     </div>
