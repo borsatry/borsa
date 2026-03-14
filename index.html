@@ -231,6 +231,40 @@
     setInterval(updateDashboard, 300000);
     setInterval(fetchTurkishNews, 300000);
 </script>
+// Переменная для хранения курсов, чтобы не запрашивать их каждый раз при вводе цифр
+let currentRates = {};
 
+async function updateDashboard() {
+    try {
+        const currRes = await fetch('https://open.er-api.com/v6/latest/USD');
+        const currData = await currRes.json();
+        currentRates = currData.rates; // Сохраняем для конвертера
+
+        const tryRate = currData.rates.TRY;
+        const eurRateInUsd = currData.rates.EUR; 
+        
+        document.getElementById('usd-try').innerText = tryRate.toFixed(2) + " TL";
+        document.getElementById('eur-try').innerText = (tryRate / eurRateInUsd).toFixed(2) + " TL";
+        document.getElementById('eur-usd').innerText = (1 / eurRateInUsd).toFixed(4);
+        
+        // ... остальной твой код (золото, биткоин) ...
+    } catch (e) { console.error(e); }
+}
+
+function convertCurrency() {
+    const amount = document.getElementById('convertAmount').value;
+    const from = document.getElementById('fromCurrency').value;
+    const to = document.getElementById('toCurrency').value;
+    const resultField = document.getElementById('resultAmount');
+
+    if (amount > 0 && currentRates[from] && currentRates[to]) {
+        // Логика: переводим в USD, затем из USD в целевую валюту
+        const amountInUsd = amount / currentRates[from];
+        const result = amountInUsd * currentRates[to];
+        resultField.value = result.toLocaleString('tr-TR', { maximumFractionDigits: 2 });
+    } else {
+        resultField.value = "";
+    }
+}
 </body>
 </html>
