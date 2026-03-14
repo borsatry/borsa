@@ -100,9 +100,12 @@
                     <div class="col-7"><input type="number" id="convertAmount" class="form-control" placeholder="Miktar" oninput="convertCurrency()"></div>
                     <div class="col-5">
                         <select id="fromCurrency" class="form-select" onchange="convertCurrency()">
-                            <option value="TRY">TRY</option>
-                            <option value="USD">USD</option>
-                            <option value="XAU">Altın</option>
+                        <option value="TRY">TRY (Türk Lirası)</option>
+                        <option value="USD">USD (Amerikan Doları)</option>
+                        <option value="XAU">Gram Altın (24 Ayar)</option>
+                        <option value="BILEZIK22">22 Ayar Bilezik (Gram)</option>
+                        <option value="CEYREK">Çeyrek Altın (Adet)</option>
+                        <option value="ATA">Ata Altın (Adet)</option>
                         </select>
                     </div>
                 </div>
@@ -251,16 +254,31 @@
 
     // Конвертер
     function convertCurrency() {
-        const amount = document.getElementById('convertAmount').value;
-        const from = document.getElementById('fromCurrency').value;
-        const resultField = document.getElementById('result-display');
-        
-        if (amount > 0 && currentRates.TRY) {
-            const goldPriceInUsd = 2150 / 31.1035;
-            const rates = {...currentRates, "XAU": 1/goldPriceInUsd};
-            const inTry = (amount / rates[from]) * rates.TRY;
-            resultField.innerText = "Sonuç: " + inTry.toLocaleString('tr-TR', {maximumFractionDigits: 2}) + " TL";
-        } else { resultField.innerText = ""; }
+    const amount = document.getElementById('convertAmount').value;
+    const from = document.getElementById('fromCurrency').value;
+    const resultField = document.getElementById('result-display');
+    
+    if (amount > 0 && currentRates.TRY) {
+        const usdToTry = currentRates.TRY;
+        const goldPriceInUsd = 2150 / 31.1035; // Цена за 1 грамм (24 карата) в USD
+        const gramGoldTry = goldPriceInUsd * usdToTry;
+
+        let finalValue = 0;
+        let suffix = "";
+
+        switch(from) {
+            case "TRY": finalValue = amount; suffix = " TL"; break;
+            case "USD": finalValue = amount * usdToTry; suffix = " TL"; break;
+            case "XAU": finalValue = amount * gramGoldTry; suffix = " TL"; break;
+            // Новые турецкие категории:
+            case "CEYREK": finalValue = amount * (gramGoldTry * 1.75); suffix = " TL"; break; // Чейрек ~1.75г
+            case "BILEZIK22": finalValue = amount * (gramGoldTry * 0.916); suffix = " TL"; break; // 22 карата (коэффициент 0.916)
+            case "ATA": finalValue = amount * (gramGoldTry * 7.21); suffix = " TL"; break; // Ата алтын ~7.21г
+        }
+
+        resultField.innerText = "Sonuç: " + finalValue.toLocaleString('tr-TR', {maximumFractionDigits: 2}) + suffix;
+    } else { 
+        resultField.innerText = ""; 
     }
 
     // Калькулятор
