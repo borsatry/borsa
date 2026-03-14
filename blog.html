@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finans Blogu | BorsaTR Analiz ve Bilgi Merkezi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --main-blue: #1e3c72; --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #2d3436; }
+        [data-theme="dark"] { --bg-color: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; }
+        .blog-header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 3rem 0; }
+        .post-card { background: var(--card-bg); border-radius: 15px; border: none; transition: 0.3s; height: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .post-card:hover { transform: translateY(-5px); }
+        .nav-link { color: white !important; font-weight: bold; }
+    </style>
+</head>
+<body data-theme="light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">BorsaTR</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="index.html">Canlı Veriler</a>
+            <a class="nav-link active" href="blog.html">Blog</a>
+        </div>
+    </div>
+</nav>
+
+<header class="blog-header text-center">
+    <div class="container">
+        <h1>Finansal Bilgi Merkezi</h1>
+        <p>Piyasaları anlamak için derinlemesine analizler и rehberler</p>
+    </div>
+</header>
+
+<div class="container mt-5 mb-5">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card post-card p-4">
+                <h3><i class="fas fa-chart-line text-primary me-2"></i>Canlı Borsa</h3>
+                <p class="text-muted small">Canlı borsa takibi, günümüz finans dünyasında hem profesyonel hem de bireysel yatırımcılar için başarının anahtarıdır. Piyasalar saniyeler içinde değişebilir и bu değişimleri anlık olarak izlemek, doğru zamanda karar vermenizi sağlar...</p>
+                <a href="index.html" class="btn btn-sm btn-outline-primary mt-auto">Grafiğe Git</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card post-card p-4">
+                <h3><i class="fas fa-coins text-warning me-2"></i>Altın Hesaplama</h3>
+                <p class="text-muted small">Türk kültüründe altın, her zaman en güvenli liman olarak kabul edilmiştir. Gram altın veya ons fiyatlarındaki değişimleri takip etmek kritiktir. Altın hesaplama aracımız ile birikimlerinizin TL karşılığını bulun...</p>
+                <a href="index.html" class="btn btn-sm btn-outline-warning mt-auto">Hesapla</a>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card post-card p-4">
+                <h3><i class="fab fa-bitcoin text-info me-2"></i>Bitcoin Kaç TL?</h3>
+                <p class="text-muted small">Dijital varlık dünyasının lideri Bitcoin'in Türk Lirası bazındaki değeri, hem global fiyatlara hem de dolar kuruna bağlıdır. 7/24 kesintisiz işlem yapılan bu piyasada anlık takibin önemi büyüktür...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center py-4 border-top">
+    <p class="text-muted small">&copy; 2026 BorsaTR Blog - Tüm Hakları Saklıdır.</p>
+</footer>
+
+<script>
+    // Подхватываем тему из localStorage
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+</script>
+</body>
+</html>
