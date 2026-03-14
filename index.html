@@ -181,22 +181,6 @@
         <p class="text-center mt-4 small text-muted">&copy; 2026 BorsaTR - Tüm Hakları Saklıdır.</p>
     </div>
 </footer>
-    document.getElementById('notify-btn').addEventListener('click', function() {
-    if (!("Notification" in window)) {
-        alert("Bu tarayıcı bildirimleri desteklemiyor.");
-    } else if (Notification.permission === "granted") {
-        alert("Bildirimler zaten açık! Önemli değişimlerde size haber vereceğiz.");
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                new Notification("BorsaTR", {
-                    body: "Tebrikler! Bildirimlere abone oldunuz. Önemli fırsatları kaçırmayacaksınız.",
-                    icon: "https://via.placeholder.com/128" // Сюда потом вставишь свою иконку
-                });
-            }
-        });
-    }
-});
     <section class="container mt-5 mb-5">
     <div class="row">
         <div class="col-12">
