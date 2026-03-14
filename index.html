@@ -211,27 +211,7 @@
         </select>
     </div>
 </div>
-    function quickCalc() {
-        const amt = document.getElementById('loanAmount').value;
-        const resBox = document.getElementById('quick-res');
-        if(amt > 0) {
-            const res = amt * 1.40; // Пример: +40% переплаты
-            resBox.innerText = "Geri Ödeme: " + Math.round(res).toLocaleString('tr-TR') + " TL";
-            resBox.classList.remove('d-none');
-        } else {
-            alert("Lütfen geçerli bir tutar girin.");
-        }
-    }
-
-    // Запуск функций
-    updateDashboard();
-    fetchTurkishNews();
-    
-    // Обновление раз в 5 минут
-    setInterval(updateDashboard, 300000);
-    setInterval(fetchTurkishNews, 300000);
-</script>
-// Переменная для хранения курсов, чтобы не запрашивать их каждый раз при вводе цифр
+    // Переменная для хранения курсов, чтобы не запрашивать их каждый раз при вводе цифр
 let currentRates = {};
 
 async function updateDashboard() {
@@ -265,6 +245,24 @@ function convertCurrency() {
     } else {
         resultField.value = "";
     }
-}
+    function quickCalc() {
+        const amt = document.getElementById('loanAmount').value;
+        const resBox = document.getElementById('quick-res');
+        if(amt > 0) {
+            const res = amt * 1.40; // Пример: +40% переплаты
+            resBox.innerText = "Geri Ödeme: " + Math.round(res).toLocaleString('tr-TR') + " TL";
+            resBox.classList.remove('d-none');
+        } else {
+            alert("Lütfen geçerli bir tutar girin.");
+        }
+
+    // Запуск функций
+    updateDashboard();
+    fetchTurkishNews();
+    
+    // Обновление раз в 5 минут
+    setInterval(updateDashboard, 300000);
+    setInterval(fetchTurkishNews, 300000);
+</script>
 </body>
 </html>
