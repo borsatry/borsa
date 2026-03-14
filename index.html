@@ -253,35 +253,36 @@
     }
 
     // Конвертер
+    // Конвертер
     function convertCurrency() {
-    const amount = document.getElementById('convertAmount').value;
-    const from = document.getElementById('fromCurrency').value;
-    const resultField = document.getElementById('result-display');
-    
-    if (amount > 0 && currentRates.TRY) {
-        const usdToTry = currentRates.TRY;
-        const goldPriceInUsd = 2150 / 31.1035; // Цена за 1 грамм (24 карата) в USD
-        const gramGoldTry = goldPriceInUsd * usdToTry;
+        const amount = document.getElementById('convertAmount').value;
+        const from = document.getElementById('fromCurrency').value;
+        const resultField = document.getElementById('result-display');
+        
+        if (amount > 0 && currentRates.TRY) {
+            const usdToTry = currentRates.TRY;
+            const goldPriceInUsd = 2150 / 31.1035; 
+            const gramGoldTry = goldPriceInUsd * usdToTry;
 
-        let finalValue = 0;
-        let suffix = "";
+            let finalValue = 0;
+            let suffix = " TL";
 
-        switch(from) {
-            case "TRY": finalValue = amount; suffix = " TL"; break;
-            case "USD": finalValue = amount * usdToTry; suffix = " TL"; break;
-            case "XAU": finalValue = amount * gramGoldTry; suffix = " TL"; break;
-            // Новые турецкие категории:
-            case "CEYREK": finalValue = amount * (gramGoldTry * 1.75); suffix = " TL"; break; // Чейрек ~1.75г
-            case "BILEZIK22": finalValue = amount * (gramGoldTry * 0.916); suffix = " TL"; break; // 22 карата (коэффициент 0.916)
-            case "ATA": finalValue = amount * (gramGoldTry * 7.21); suffix = " TL"; break; // Ата алтын ~7.21г
+            switch(from) {
+                case "TRY": finalValue = amount; break;
+                case "USD": finalValue = amount * usdToTry; break;
+                case "XAU": finalValue = amount * gramGoldTry; break;
+                case "CEYREK": finalValue = amount * (gramGoldTry * 1.75); break; 
+                case "BILEZIK22": finalValue = amount * (gramGoldTry * 0.916); break; 
+                case "ATA": finalValue = amount * (gramGoldTry * 7.21); break;
+            }
+
+            resultField.innerText = "Sonuç: " + finalValue.toLocaleString('tr-TR', {maximumFractionDigits: 2}) + suffix;
+        } else { 
+            resultField.innerText = ""; 
         }
+    } // <-- Вот эта скобка была пропущена
 
-        resultField.innerText = "Sonuç: " + finalValue.toLocaleString('tr-TR', {maximumFractionDigits: 2}) + suffix;
-    } else { 
-        resultField.innerText = ""; 
-    }
-
-    // Калькулятор
+    // Калькулятор прибыли
     function calculateProfit() {
         const buy = parseFloat(document.getElementById('buyPrice').value);
         const amount = parseFloat(document.getElementById('investAmount').value);
