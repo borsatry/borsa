@@ -126,14 +126,18 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
+    <script>
     let currentSymbol = 'BINANCE:BTCUSDT'; 
     let currentRates = {};
 
+    // 1. Функция для загрузки графика
     function loadChart(theme = 'light', symbol = currentSymbol) {
-        new TradingView.widget({
-            "autosize": true, "symbol": symbol, "interval": "D", "timezone": "Europe/Istanbul",
-            "theme": theme, "style": "1", "locale": "tr", "container_id": "tradingview_main"
-        });
+        if (typeof TradingView !== 'undefined') {
+            new TradingView.widget({
+                "autosize": true, "symbol": symbol, "interval": "D", "timezone": "Europe/Istanbul",
+                "theme": theme, "style": "1", "locale": "tr", "container_id": "tradingview_main"
+            });
+        }
     }
 
     function changeChart(symbol) {
@@ -143,7 +147,24 @@
         loadChart(theme, symbol);
     }
 
-    // ЛОГИКА КОНВЕРТЕРА
+    // 2. Функция для вывода новостей (из твоего блога)
+    function updateNews() {
+        const newsContainer = document.getElementById('news-container');
+        const blogPosts = [
+            { title: "2026 Altın Tahminleri", link: "blog.html" },
+            { title: "Halka Arz Rehberi 2026", link: "blog.html" },
+            { title: "Bitcoin 100.000$ Analizi", link: "blog.html" }
+        ];
+        newsContainer.innerHTML = blogPosts.map(post => 
+            `<div class="mb-3 border-bottom pb-2">
+                <a href="${post.link}" class="text-decoration-none text-dark fw-bold small">
+                    <i class="fas fa-chevron-right me-1 text-primary"></i> ${post.title}
+                </a>
+            </div>`
+        ).join('');
+    }
+
+    // 3. Логика конвертера
     function convertCurrency() {
         const amount = document.getElementById('convertAmount').value;
         const from = document.getElementById('fromCurrency').value;
@@ -161,8 +182,8 @@
                     valueInUsd = amount * goldPriceInUsd; 
                     break;
                 case "BTC":
-                    const btcPriceText = document.getElementById('btc-price').innerText.replace('$', '').replace(',', '');
-                    valueInUsd = amount * parseFloat(btcPriceText);
+                    const btcText = document.getElementById('btc-price').innerText.replace('$', '').replace(',', '');
+                    valueInUsd = amount * parseFloat(btcText);
                     break;
             }
             const finalValue = valueInUsd * currentRates.TRY;
@@ -172,6 +193,7 @@
         }
     }
 
+    // 4. Основное обновление данных
     async function updateDashboard() {
         try {
             const res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -190,29 +212,18 @@
             const btcPrice = btcData.bitcoin.usd;
             document.getElementById('btc-price').innerText = "$" + btcPrice.toLocaleString();
 
-            document.getElementById('daily-summary').innerText = `Piyasa Özeti: Dolar ${data.rates.TRY.toFixed(2)} TL, Altın ${Math.round(goldGram)} TL, Bitcoin ${btcPrice.toLocaleString()} dolar seviyesinde.`;
-            
-            // Вызываем конвертацию при обновлении данных, если в поле что-то введено
+            document.getElementById('daily-summary').innerText = `Piyasa Özeti: Dolar ${data.rates.TRY.toFixed(2)} TL, Altın ${Math.round(goldGram)} TL, Bitcoin ${btcPrice.toLocaleString()} dolar.`;
             convertCurrency();
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Veri hatası:", e); }
     }
 
-    document.getElementById('notify-btn').addEventListener('click', () => {
-        if (!("Notification" in window)) alert("Desteklenmiyor");
-        else Notification.requestPermission().then(p => {
-            if(p === "granted") new Notification("BorsaTR", { body: "Bildirimler açıldı!" });
-        });
-    });
-
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-        const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        document.getElementById('theme-text').innerText = newTheme === 'dark' ? 'Açık Tema' : 'Koyu Tema';
-        loadChart(newTheme);
-    });
-
-    updateDashboard();
-    loadChart();
+    // Инициализация
+    window.onload = () => {
+        updateDashboard();
+        updateNews();
+        setTimeout(loadChart, 500); // Небольшая задержка для стабильности графика
+    };
+    
     setInterval(updateDashboard, 300000);
 </script>
 </body>
