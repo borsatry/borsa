@@ -119,7 +119,14 @@
     </div>
 </div>
 
-<footer class="text-center py-4 text-muted small">
+    <div class="card p-3 mt-3">
+    <h5 class="mb-3"><i class="fas fa-cloud-sun me-2 text-info"></i>Hava Durumu</h5>
+    <div id="weather-widget">
+        <a class="weatherwidget-io" href="https://forecast7.com/tr/41d0128d98/istanbul/" data-label_1="İSTANBUL" data-label_2="HAVA DURUMU" data-theme="pure" >İSTANBUL HAVA DURUMU</a>
+    </div>
+</div>
+
+    <footer class="text-center py-4 text-muted small">
     &copy; 2026 BorsaTR - Tüm Hakları Saklıdır.
 </footer>
 
@@ -224,6 +231,10 @@
     };
     
     setInterval(updateDashboard, 300000);
+</script>
+
+    <script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
 </script>
 </body>
 </html>
