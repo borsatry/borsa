@@ -3,26 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kredi Hesaplama Aracı 2026 | BorsaTR</title>
+    <title>Kredi Hesaplama 2026 | BorsaTR</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
-        .calc-card { border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; }
-        .kredi-border { border-left: 5px solid #007bff; }
-        .result-box { background: #f0f7ff; border: 1px solid #cce5ff; border-radius: 10px; padding: 20px; }
-        .summary-item { border-bottom: 1px dashed #dee2e6; padding: 10px 0; display: flex; justify-content: space-between; }
-    </ol>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .calc-card { border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; margin-top: 50px; }
+        .result-box { background: #f0f7ff; border-radius: 10px; padding: 20px; }
+    </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2 shadow-sm mb-5">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-bold" href="index.html">BorsaTR</a>
         <div class="navbar-nav ms-auto">
-            <a class="nav-link px-3" href="index.html">Anasayfa</a>
-            <a class="nav-link px-3" href="mevduat-faizi-hesaplama.html">Mevduat Faizi</a>
-            <a class="nav-link px-3" href="altin-hesaplama.html">Altın Hesaplama</a>
+            <a class="nav-link" href="index.html">Ana Sayfa</a>
+            <a class="nav-link" href="blog.html">Blog</a>
         </div>
     </div>
 </nav>
@@ -30,80 +27,46 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-6">
-            <div class="card calc-card p-4 kredi-border">
-                <h2 class="fw-bold text-center mb-4"><i class="fas fa-hand-holding-usd text-primary me-2"></i>Kredi Hesaplama</h2>
+            <div class="card calc-card p-4 border-top border-primary border-5">
+                <h2 class="fw-bold text-center mb-4 text-primary">Kredi Hesaplama</h2>
                 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Kredi Tutarı (TL)</label>
-                    <input type="number" class="form-control form-control-lg" id="loanAmount" value="50000" min="1000">
+                    <input type="number" class="form-control form-control-lg" id="amount" value="50000">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Vade (Ay)</label>
-                    <select class="form-select form-select-lg" id="loanTerm">
-                        <option value="12">12 Ay</option>
-                        <option value="24">24 Ay</option>
-                        <option value="36" selected>36 Ay</option>
-                        <option value="48">48 Ay</option>
-                    </select>
+                    <input type="number" class="form-control form-control-lg" id="term" value="12">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-bold">Aylık Faiz Oranı (%)</label>
-                    <input type="number" class="form-control form-control-lg" id="interestRate" value="3.99" step="0.01">
+                    <input type="number" class="form-control form-control-lg" id="rate" value="3.99" step="0.01">
                 </div>
 
-                <div class="result-box">
-                    <div class="summary-item">
-                        <span>Aylık Taksit:</span>
-                        <strong id="monthlyPayment" class="text-primary">0.00 TL</strong>
-                    </div>
-                    <div class="summary-item">
-                        <span>Toplam Geri Ödeme:</span>
-                        <strong id="totalPayment">0.00 TL</strong>
-                    </div>
-                    <div class="summary-item border-0">
-                        <span>Toplam Faiz:</span>
-                        <strong id="totalInterest" class="text-danger">0.00 TL</strong>
-                    </div>
+                <div class="result-box text-center">
+                    <h5 class="text-muted">Aylık Taksit:</h5>
+                    <h2 class="fw-bold text-primary" id="monthlyResult">0.00 TL</h2>
                 </div>
-                
-                <p class="text-muted small mt-3 text-center">* Vergi (KKDF, BSMV) hesaplamaya dahil edilmiştir.</p>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const amountInp = document.getElementById('loanAmount');
-    const termInp = document.getElementById('loanTerm');
-    const rateInp = document.getElementById('interestRate');
-
-    function calculateLoan() {
-        const P = parseFloat(amountInp.value);
-        const term = parseInt(termInp.value);
-        let monthlyRate = parseFloat(rateInp.value) / 100;
+    function calc() {
+        const p = document.getElementById('amount').value;
+        const n = document.getElementById('term').value;
+        const i = document.getElementById('rate').value / 100;
         
-        // Налоги в Турции на кредит (примерно +30% к ставке: KKDF %15, BSMV %15)
-        monthlyRate = monthlyRate * 1.30; 
-
-        if (monthlyRate === 0) {
-            var monthly = P / term;
-        } else {
-            var monthly = (P * monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
+        if(p && n && i) {
+            const monthly = (p * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+            document.getElementById('monthlyResult').innerText = monthly.toLocaleString('tr-TR', {maximumFractionDigits:2}) + " TL";
         }
-
-        const total = monthly * term;
-        const interest = total - P;
-
-        document.getElementById('monthlyPayment').innerText = monthly.toLocaleString('tr-TR', {maximumFractionDigits:2}) + " TL";
-        document.getElementById('totalPayment').innerText = total.toLocaleString('tr-TR', {maximumFractionDigits:2}) + " TL";
-        document.getElementById('totalInterest').innerText = interest.toLocaleString('tr-TR', {maximumFractionDigits:2}) + " TL";
     }
-
-    [amountInp, termInp, rateInp].forEach(el => el.addEventListener('input', calculateLoan));
-    calculateLoan();
+    document.querySelectorAll('input').forEach(input => input.addEventListener('input', calc));
+    calc();
 </script>
-
 </body>
 </html>
