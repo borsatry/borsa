@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anlık Mevduat Faizi Hesaplama 2026 | Чистый Доход | BorsaTR</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; padding-top: 20px; }
+        .calc-card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .deposit-border { border-left: 5px solid #28a745; }
+        .interest-slider-label { display: flex; justify-content: space-between; align-items: center; }
+        .result-box { background: #e9f7ef; border-radius: 10px; padding: 20px; margin-top: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 article-card">
+            <nav class="navbar navbar-dark bg-dark mb-4 p-2 rounded">
+                <div class="container-fluid">
+                    <a class="navbar-brand fw-bold" href="index.html">BorsaTR</a>
+                    <a href="index.html" class="btn btn-outline-light btn-sm btn-back"><i class="fas fa-arrow-left me-2"></i>Borsa'ya Dön</a>
+                </div>
+            </nav>
+
+            <div class="card calc-card deposit-border">
+                <h1 class="fw-bold mb-4 text-center text-dark h3"><i class="fas fa-percent text-success me-2"></i>Mevduat Faizi Hesaplama (Чистый Доход)</h1>
+                <p class="text-muted text-center mb-4">Mevduat tutarını ve vadenizi girin, faiz kazancınızı anında öğrenin.</p>
+                <hr>
+
+                <div class="mb-4 mt-3">
+                    <label class="form-label fw-bold h6">Mevduat Tutarı (TL)</label>
+                    <input type="number" class="form-control form-control-lg text-success" id="principal" value="100000" min="1000">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold h6 interest-slider-label">
+                        Vade (Gün)
+                        <span class="badge bg-secondary rounded-pill h6" id="periodDisplay">32 Gün</span>
+                    </label>
+                    <input type="range" class="form-range" id="period" min="7" max="365" step="1" value="32">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold h6">Piyasa Ortalama Faiz Oranı (%)</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control form-control-lg" id="rate" value="52" min="1" max="100" step="0.1">
+                        <span class="input-group-text h6 fw-bold text-muted">%</span>
+                    </div>
+                    <p class="text-muted small mt-1">* 2026 yılı piyasa ortalama verilerine göre tahmin edilmektedir.</p>
+                </div>
+
+                <div class="result-box mt-5">
+                    <p class="mb-1 text-muted h6"> чистый faiz kazancınız:</p>
+                    <h2 class="fw-bold text-success mb-2" id="netInterestResult">4.500,00 TL</h2>
+                    <p class="text-muted small mb-0 mt-3">Vadeli mevduat faiz kazancınız, %5 vergi (stopaj) kesildikten sonra hesaplanmıştır.</p>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a href="blog.html" class="text-decoration-none small text-primary fw-bold">
+                    <i class="fas fa-info-circle me-1"></i> Faiz Oranları Neden Değişiyor? Uzman Analizini Okuyun
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center py-4 text-muted small mt-5">&copy; 2026 BorsaTR</footer>
+
+<script>
+    // Получение элементов
+    const principalInput = document.getElementById('principal');
+    const periodInput = document.getElementById('period');
+    const rateInput = document.getElementById('rate');
+    const periodDisplay = document.getElementById('periodDisplay');
+    const netInterestDisplay = document.getElementById('netInterestResult');
+
+    // Функция расчета
+    function calculate() {
+        const principal = parseFloat(principalInput.value) || 0;
+        const period = parseInt(periodInput.value);
+        const rate = parseFloat(rateInput.value) || 0;
+
+        // Расчет чистой прибыли с учетом стопажа (предполагаем 5%)
+        // Формула: (Капитал * Процентная ставка * Количество дней) / (360 * 100)
+        const grossInterest = (principal * rate * period) / 36000;
+        const taxRate = 0.05; // Стопаж (5%)
+        const netInterest = grossInterest * (1 - taxRate);
+
+        // Обновление отображения
+        periodDisplay.innerText = period + ' Gün';
+        netInterestDisplay.innerText = netInterest.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' TL';
+    }
+
+    // Слушатели событий
+    principalInput.addEventListener('input', calculate);
+    periodInput.addEventListener('input', calculate);
+    rateInput.addEventListener('input', calculate);
+
+    // Первичный расчет
+    calculate();
+</script>
+
+</body>
+</html>
