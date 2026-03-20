@@ -28,6 +28,9 @@
         <a class="navbar-brand fw-bold" href="index.html">
             <i class="fas fa-chart-line text-primary me-2"></i>BorsaTR
         </a>
+        <button class="btn btn-outline-secondary btn-sm ms-2" id="darkModeToggle">
+    <i class="fas fa-moon"></i>
+        </button>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-nav="navContent">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -74,6 +77,37 @@
         { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" }
     ], "colorTheme": "light", "isTransparent": false, "displayMode": "adaptive", "locale": "tr" }
     </script>
+    <script>
+    const toggleBtn = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    // Проверяем, была ли включена тема ранее
+    if (localStorage.getItem('dark-mode') === 'enabled') {
+        body.classList.add('dark-mode');
+        toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('dark-mode', 'enabled');
+            toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            localStorage.setItem('dark-mode', 'disabled');
+            toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+    });
+</script>
+
+<style>
+    /* Стили для темной темы */
+    .dark-mode { background-color: #1a1a1a !important; color: #ffffff !important; }
+    .dark-mode .card { background-color: #2d2d2d !important; color: white !important; }
+    .dark-mode .navbar { background-color: #000000 !important; }
+    .dark-mode .table { color: white !important; }
+    .dark-mode .text-muted { color: #aaa !important; }
+</style>
 </div>
 <div class="container mt-4">
     <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 15px; background: linear-gradient(135deg, #fff5c3 0%, #f7d716 100%);">
