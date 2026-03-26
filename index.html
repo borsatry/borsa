@@ -3,270 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="BorsaTR: Canlı borsa takibi, altın hesaplama и finans haberleri.">
-    <meta name="keywords" content="borsa takibi, canlı altın, halka arz takvimi, finans haberleri">
-    <meta name="author" content="BorsaTR">
     <title>BorsaTR | Finans, Grafik ve Haberler</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main-blue: #1e3c72; --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #2d3436; }
+        :root { --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #2d3436; }
         [data-theme="dark"] { --bg-color: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; }
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; transition: 0.3s; margin: 0; padding: 0; }
-        .header-section { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 3rem 0; margin-bottom: 2rem; }
-        .card { background-color: var(--card-bg); color: var(--text-color); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .val-text { font-size: 1.3rem; font-weight: 800; }
-        #chart-container { height: 400px; border-radius: 15px; overflow: hidden; }
-        .summary-box { background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); border-radius: 10px; padding: 10px; }
+        body { background-color: var(--bg-color); color: var(--text-color); transition: 0.3s; margin: 0; }
+        .header-section { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 2rem 0; }
+        .card { background-color: var(--card-bg); color: var(--text-color); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .val-text { font-size: 1.2rem; font-weight: 800; }
+        #chart-container { height: 400px; border-radius: 15px; overflow: hidden; background: #fff; }
+        [data-theme="dark"] #chart-container { background: #1e1e1e; }
     </style>
+    <script>
+        // Немедленная установка темы для предотвращения мерцания
+        const savedTheme = localStorage.getItem('borsaTR-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2 shadow-sm sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.html">BorsaTR</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="mainNav">
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link px-3 active" href="index.html">Canlı Veriler</a>
-                    <a class="nav-link px-3" href="altin-hesaplama.html">Altın Hesap</a>
-                    <a class="nav-link px-3" href="mevduat-faizi-hesaplama.html">Mevduat</a>
-                    <a class="nav-link px-3" href="kredi-hesaplama.html">Kredi</a>
-                    <a class="nav-link px-3" href="halka-arz-takvimi.html">Halka Arz</a>
-                    <a class="nav-link px-3" href="ekonomik-takvim.html">Takvim</a>
-                    <a class="nav-link px-3" href="blog.html">Blog</a>
-                    <a class="nav-link px-3 fw-bold text-warning" href="hakkimizda.html">Hakkımızda</a>
-                </div>
+            <div class="navbar-nav ms-auto flex-row gap-3">
+                <a class="nav-link" href="blog.html">Blog</a>
+                <a class="nav-link fw-bold text-warning" href="hakkimizda.html">Hakkımızda</a>
             </div>
         </div>
     </nav>
 
-    <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-        { "symbols": [
-            { "proName": "BIST:XU100", "title": "BIST 100" },
-            { "proName": "BIST:THYAO", "title": "THY" },
-            { "proName": "BIST:ASELS", "title": "Aselsan" },
-            { "proName": "OANDA:XAUUSD", "title": "Altın" },
-            { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" }
-        ], "colorTheme": "light", "isTransparent": false, "displayMode": "adaptive", "locale": "tr" }
-        </script>
-    </div>
-
     <div class="header-section text-center">
         <div class="container">
-            <h1 class="fw-bold display-4">BorsaTR</h1>
-            <div class="row justify-content-center my-4">
-                <div class="col-md-8">
-                    <div class="summary-box border border-light">
-                        <div class="d-flex align-items-center">
-                            <span class="badge bg-warning text-dark me-2">Günün Özeti</span>
-                            <marquee id="daily-summary" class="small fw-bold text-white">Veriler güncelleniyor...</marquee>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center gap-2">
-                <button id="theme-toggle" class="btn btn-outline-light btn-sm"><i class="fas fa-moon me-1"></i> Koyu Tema</button>
-                <button id="notify-btn" class="btn btn-warning btn-sm fw-bold"><i class="fas fa-bell me-1"></i> Bildirimleri Aç</button>
+            <h1 class="fw-bold">BorsaTR</h1>
+            <p id="daily-summary" class="small opacity-75">Veriler yükleniyor...</p>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <button id="theme-toggle" class="btn btn-outline-light btn-sm">Кoyu Tema</button>
             </div>
         </div>
     </div>
 
-    <div class="container">
-        <div class="card border-0 shadow-sm p-3 text-center mb-4" style="border-radius: 15px; background: linear-gradient(135deg, #fff5c3 0%, #f7d716 100%);">
-            <h5 class="fw-bold mb-1">Hızlı Altın Hesaplama</h5>
-            <p class="small mb-2">Elinizdeki altının kaç TL ettiğini hemen öğrenin.</p>
-            <a href="altin-hesaplama.html" class="btn btn-dark btn-sm rounded-pill px-4">Hesaplamaya Başla</a>
-        </div>
-
+    <div class="container mt-4">
         <div class="row g-3 mb-4 text-center">
-            <div class="col-md-2 col-6"><div class="card p-3"><small class="text-muted">USD/TRY</small><div id="usd-try" class="val-text text-primary">--.--</div></div></div>
-            <div class="col-md-2 col-6"><div class="card p-3"><small class="text-muted">EUR/TRY</small><div id="eur-try" class="val-text text-danger">--.--</div></div></div>
-            <div class="col-md-2 col-6"><div class="card p-3"><small class="text-muted">EUR/USD</small><div id="eur-usd" class="val-text text-secondary">-.--</div></div></div>
-            <div class="col-md-3 col-6"><div class="card p-3"><small class="text-muted">Gram Altın</small><div id="gold-price" class="val-text text-warning">----</div></div></div>
-            <div class="col-md-3 col-6"><div class="card p-3"><small class="text-muted">Bitcoin</small><div id="btc-price" class="val-text text-info">--.---</div></div></div>
+            <div class="col-md-2 col-6"><div class="card p-3"><small>USD/TRY</small><div id="usd-try" class="val-text text-primary">--.--</div></div></div>
+            <div class="col-md-2 col-6"><div class="card p-3"><small>EUR/TRY</small><div id="eur-try" class="val-text text-danger">--.--</div></div></div>
+            <div class="col-md-3 col-6"><div class="card p-3"><small>Gram Altın</small><div id="gold-price" class="val-text text-warning">----</div></div></div>
+            <div class="col-md-3 col-6"><div class="card p-3"><small>Bitcoin</small><div id="btc-price" class="val-text text-info">--.---</div></div></div>
         </div>
 
         <div class="row">
             <div class="col-lg-8">
                 <div class="card p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="m-0"><i class="fas fa-chart-area me-2 text-primary"></i>Canlı Grafikler</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="m-0">Canlı Grafik</h5>
                         <div class="btn-group btn-group-sm">
-                            <button onclick="changeChart('BINANCE:BTCUSDT')" class="btn btn-outline-primary active" id="btn-btc">Bitcoin</button>
-                            <button onclick="changeChart('OANDA:XAUUSD')" class="btn btn-outline-warning" id="btn-gold">Altın</button>
+                            <button onclick="changeChart('BINANCE:BTCUSDT')" class="btn btn-primary" id="btn-btc">BTC</button>
+                            <button onclick="changeChart('OANDA:XAUUSD')" class="btn btn-warning" id="btn-gold">Altın</button>
                         </div>
                     </div>
                     <div id="chart-container"><div id="tradingview_main" style="height: 100%;"></div></div>
                 </div>
-
-                <div class="card p-3 mt-4">
-                    <h5 class="mb-3"><i class="fas fa-calendar-check me-2 text-primary"></i>Ekonomik Takvim (Canlı)</h5>
-                    <div class="tradingview-widget-container" style="height: 400px;">
-                        <div class="tradingview-widget-container__widget"></div>
-                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-                        { "colorTheme": "light", "isTransparent": false, "width": "100%", "height": "100%", "locale": "tr", "importanceFilter": "-1,0,1", "currencyFilter": "USD,TRY,EUR" }
-                        </script>
-                    </div>
-                </div>
-
-                <div class="card p-4 mt-4">
-                    <h5><i class="fas fa-calculator me-2"></i>Döviz и Altın Çevirici</h5>
-                    <hr>
-                    <div class="row g-2">
-                        <div class="col-7"><input type="number" id="convertAmount" class="form-control" placeholder="Miktar" oninput="convertCurrency()"></div>
-                        <div class="col-5">
-                            <select id="fromCurrency" class="form-select" onchange="convertCurrency()">
-                                <option value="TRY">TRY</option>
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="XAU">Gram Altın</option>
-                                <option value="BTC">Bitcoin</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="result-display" class="mt-3 fw-bold text-success text-center h5"></div>
-                </div>
             </div>
-
             <div class="col-lg-4">
                 <div class="card p-3">
-                    <h5 class="mb-3"><i class="fas fa-newspaper me-2"></i>Son Haberler</h5>
-                    <div id="news-container"><p class="text-center text-muted small">Yükleniyor...</p></div>
-                </div>
-
-                <div class="card p-3 mt-3">
-                    <h5 class="mb-3"><i class="fas fa-gauge-high me-2 text-warning"></i>Kripto Korku ve Açgözlülük</h5>
-                    <div class="text-center">
-                        <img src="https://alternative.me/crypto/fear-and-greed-index.png" alt="Index" class="img-fluid rounded-3 shadow-sm">
-                    </div>
-                </div>
-
-                <div class="card p-3 mt-3">
-                    <h5 class="mb-3"><i class="fas fa-cloud-sun me-2 text-info"></i>Hava Durumu</h5>
-                    <a class="weatherwidget-io" href="https://forecast7.com/tr/41d0128d98/istanbul/" data-label_1="İSTANBUL" data-label_2="HAVA DURUMU" data-theme="pure">İSTANBUL HAVA DURUMU</a>
+                    <h5>Son Haberler</h5>
+                    <div id="news-container"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="text-center py-4 text-muted small">
-        &copy; 2026 BorsaTR - Tüm Hakları Saklıdır.
-    </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    
     <script>
-        // Глобальные переменные
-let currentRates = { TRY: 0, EUR: 0, USD: 1 };
-let btcPriceGlobal = 0;
+        let btcPrice = 0;
+        let tryRate = 0;
 
-// 1. Инициализация темы ПЕРЕД загрузкой всего остального
-(function initTheme() {
-    const savedTheme = localStorage.getItem('borsaTR-theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-})();
+        async function updateData() {
+            try {
+                // Валюты
+                const res = await fetch('https://open.er-api.com/v6/latest/USD');
+                const data = await res.json();
+                tryRate = data.rates.TRY;
+                document.getElementById('usd-try').innerText = tryRate.toFixed(2) + " TL";
+                document.getElementById('eur-try').innerText = (tryRate / data.rates.EUR).toFixed(2) + " TL";
+                
+                // Золото (примерный расчет)
+                const gold = (2160 / 31.1035) * tryRate;
+                document.getElementById('gold-price').innerText = Math.round(gold).toLocaleString() + " TL";
 
-// 2. Функция применения темы (исправленная)
-function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    const themeToggle = document.getElementById('theme-toggle');
-    
-    if (theme === 'dark') {
-        themeToggle.innerHTML = '<i class="fas fa-sun me-1"></i> <span>Açık Tema</span>';
-        themeToggle.classList.replace('btn-outline-light', 'btn-warning');
-    } else {
-        themeToggle.innerHTML = '<i class="fas fa-moon me-1"></i> <span>Koyu Tema</span>';
-        themeToggle.classList.replace('btn-warning', 'btn-outline-light');
-    }
-    
-    localStorage.setItem('borsaTR-theme', theme);
-    
-    // Перерисовываем график с новой темой
-    const activeSymbol = document.getElementById('btn-gold')?.classList.contains('active') 
-        ? 'OANDA:XAUUSD' 
-        : 'BINANCE:BTCUSDT';
-    loadChart(activeSymbol, theme);
-}
+                // Биткоин
+                const bRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+                const bData = await bRes.json();
+                btcPrice = bData.bitcoin.usd;
+                document.getElementById('btc-price').innerText = "$" + btcPrice.toLocaleString();
 
-// 3. Загрузка графика (с проверкой на наличие контейнера)
-function loadChart(symbol = 'BINANCE:BTCUSDT', theme = 'light') {
-    const container = document.getElementById('tradingview_main');
-    if (container && typeof TradingView !== 'undefined') {
-        container.innerHTML = ""; // Очищаем перед пересозданием
-        new TradingView.widget({
-            "autosize": true, 
-            "symbol": symbol, 
-            "interval": "D", 
-            "timezone": "Europe/Istanbul",
-            "theme": theme, 
-            "style": "1", 
-            "locale": "tr", 
-            "container_id": "tradingview_main"
-        });
-    }
-}
+                document.getElementById('daily-summary').innerText = `Dolar: ${tryRate.toFixed(2)} TL | Bitcoin: $${btcPrice.toLocaleString()}`;
+            } catch (e) { console.log("Hata:", e); }
+        }
 
-// 4. Обновление данных (курсы валют)
-async function updateDashboard() {
-    try {
-        const res = await fetch('https://open.er-api.com/v6/latest/USD');
-        const data = await res.json();
-        currentRates = data.rates;
-        
-        document.getElementById('usd-try').innerText = data.rates.TRY.toFixed(2) + " TL";
-        document.getElementById('eur-try').innerText = (data.rates.TRY / data.rates.EUR).toFixed(2) + " TL";
-        document.getElementById('eur-usd').innerText = (1 / data.rates.EUR).toFixed(4);
-        
-        const goldGram = (2150 / 31.1035) * data.rates.TRY;
-        document.getElementById('gold-price').innerText = Math.round(goldGram).toLocaleString('tr-TR') + " TL";
+        function loadChart(symbol) {
+            const theme = document.documentElement.getAttribute('data-theme') || 'light';
+            if (window.TradingView) {
+                new TradingView.widget({
+                    "autosize": true, "symbol": symbol, "interval": "D",
+                    "theme": theme, "style": "1", "locale": "tr",
+                    "container_id": "tradingview_main"
+                });
+            }
+        }
 
-        const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-        const btcData = await btcRes.json();
-        btcPriceGlobal = btcData.bitcoin.usd;
-        document.getElementById('btc-price').innerText = "$" + btcPriceGlobal.toLocaleString();
+        function changeChart(symbol) {
+            document.getElementById('btn-btc').classList.toggle('active', symbol.includes('BTC'));
+            document.getElementById('btn-gold').classList.toggle('active', symbol.includes('XAU'));
+            loadChart(symbol);
+        }
 
-        document.getElementById('daily-summary').innerText = `Piyasa Özeti: Dolar ${data.rates.TRY.toFixed(2)} TL, Altın ${Math.round(goldGram)} TL, Bitcoin ${btcPriceGlobal.toLocaleString()} dolar.`;
-    } catch (e) { 
-        console.error("API Hatası:", e); 
-    }
-}
-
-// Кнопки переключения графиков
-function changeChart(symbol) {
-    const theme = document.documentElement.getAttribute('data-theme') || 'light';
-    document.getElementById('btn-btc').classList.toggle('active', symbol === 'BINANCE:BTCUSDT');
-    document.getElementById('btn-gold').classList.toggle('active', symbol === 'OANDA:XAUUSD');
-    loadChart(symbol, theme);
-}
-
-// Новости и калькулятор (оставь как было)
-function updateNews() {
-    const news = [
-        { title: "2026 Altın Tahminleri", link: "blog.html" },
-        { title: "Halka Arz Rehberi 2026", link: "halka-arz-takvimi.html" },
-        { title: "Bitcoin Analizi", link: "blog.html" }
-    ];
-    document.getElementById('news-container').innerHTML = news.map(n => 
-        `<div class="mb-2 border-bottom pb-1"><a href="${n.link}" class="text-decoration-none text-dark small fw-bold">${n.title}</a></div>`
-    ).join('');
-}
-
-// Запуск всего процесса
-window.onload = () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    applyTheme(currentTheme);
-    updateDashboard();
-    updateNews();
-    setTimeout(() => loadChart('BINANCE:BTCUSDT', currentTheme), 500);
-};
-
-// Слушатель кнопки темы
-document.getElementById('theme-toggle').addEventListener('click', () => {
-    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(theme);
-});
+        // Логика темы
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? '
