@@ -161,119 +161,112 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let currentRates = { TRY: 0, EUR: 0, USD: 1 };
-        let btcPriceGlobal = 0;
+        // Глобальные переменные
+let currentRates = { TRY: 0, EUR: 0, USD: 1 };
+let btcPriceGlobal = 0;
 
-        // 1. Функция применения темы (с сохранением и графиком)
-        function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            const themeToggle = document.getElementById('theme-toggle');
-            
-            if (theme === 'dark') {
-                themeToggle.innerHTML = '<i class="fas fa-sun me-1"></i> <span id="theme-text">Açık Tema</span>';
-                themeToggle.classList.replace('btn-outline-light', 'btn-warning');
-            } else {
-                themeToggle.innerHTML = '<i class="fas fa-moon me-1"></i> <span id="theme-text">Koyu Tema</span>';
-                themeToggle.classList.replace('btn-warning', 'btn-outline-light');
-            }
-            
-            localStorage.setItem('borsaTR-theme', theme);
-            
-            // Перезагружаем график с нужной темой
-            const activeSymbol = document.getElementById('btn-gold').classList.contains('active') 
-                ? 'OANDA:XAUUSD' 
-                : 'BINANCE:BTCUSDT';
-            loadChart(activeSymbol, theme);
-        }
+// 1. Инициализация темы ПЕРЕД загрузкой всего остального
+(function initTheme() {
+    const savedTheme = localStorage.getItem('borsaTR-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+})();
 
-        // 2. Загрузка графика TradingView
-        function loadChart(symbol = 'BINANCE:BTCUSDT', theme = 'light') {
-            if (typeof TradingView !== 'undefined') {
-                new TradingView.widget({
-                    "autosize": true, 
-                    "symbol": symbol, 
-                    "interval": "D", 
-                    "timezone": "Europe/Istanbul",
-                    "theme": theme, 
-                    "style": "1", 
-                    "locale": "tr", 
-                    "container_id": "tradingview_main"
-                });
-            }
-        }
+// 2. Функция применения темы (исправленная)
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    if (theme === 'dark') {
+        themeToggle.innerHTML = '<i class="fas fa-sun me-1"></i> <span>Açık Tema</span>';
+        themeToggle.classList.replace('btn-outline-light', 'btn-warning');
+    } else {
+        themeToggle.innerHTML = '<i class="fas fa-moon me-1"></i> <span>Koyu Tema</span>';
+        themeToggle.classList.replace('btn-warning', 'btn-outline-light');
+    }
+    
+    localStorage.setItem('borsaTR-theme', theme);
+    
+    // Перерисовываем график с новой темой
+    const activeSymbol = document.getElementById('btn-gold')?.classList.contains('active') 
+        ? 'OANDA:XAUUSD' 
+        : 'BINANCE:BTCUSDT';
+    loadChart(activeSymbol, theme);
+}
 
-        function changeChart(symbol) {
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-            document.getElementById('btn-btc').classList.toggle('active', symbol === 'BINANCE:BTCUSDT');
-            document.getElementById('btn-gold').classList.toggle('active', symbol === 'OANDA:XAUUSD');
-            loadChart(symbol, currentTheme);
-        }
-
-        // 3. Обновление данных (API)
-        async function updateDashboard() {
-            try {
-                const res = await fetch('https://open.er-api.com/v6/latest/USD');
-                const data = await res.json();
-                currentRates = data.rates;
-                
-                document.getElementById('usd-try').innerText = data.rates.TRY.toFixed(2) + " TL";
-                document.getElementById('eur-try').innerText = (data.rates.TRY / data.rates.EUR).toFixed(2) + " TL";
-                document.getElementById('eur-usd').innerText = (1 / data.rates.EUR).toFixed(4);
-                
-                const goldGram = (2150 / 31.1035) * data.rates.TRY;
-                document.getElementById('gold-price').innerText = Math.round(goldGram).toLocaleString('tr-TR') + " TL";
-
-                const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-                const btcData = await btcRes.json();
-                btcPriceGlobal = btcData.bitcoin.usd;
-                document.getElementById('btc-price').innerText = "$" + btcPriceGlobal.toLocaleString();
-
-                document.getElementById('daily-summary').innerText = `Piyasa Özeti: Dolar ${data.rates.TRY.toFixed(2)} TL, Altın ${Math.round(goldGram)} TL, Bitcoin ${btcPriceGlobal.toLocaleString()} dolar.`;
-            } catch (e) { console.error("Data error:", e); }
-        }
-
-        // 4. Конвертер
-        function convertCurrency() {
-            const amount = document.getElementById('convertAmount').value;
-            const from = document.getElementById('fromCurrency').value;
-            const resultField = document.getElementById('result-display');
-            if (amount > 0 && currentRates.TRY) {
-                let valInUsd = 0;
-                if(from === "TRY") valInUsd = amount / currentRates.TRY;
-                else if(from === "USD") valInUsd = amount;
-                else if(from === "EUR") valInUsd = amount / currentRates.EUR;
-                else if(from === "BTC") valInUsd = amount * btcPriceGlobal;
-                else if(from === "XAU") valInUsd = amount * (2150 / 31.1035);
-                
-                const final = valInUsd * currentRates.TRY;
-                resultField.innerText = "= " + final.toLocaleString('tr-TR', { maximumFractionDigits: 2 }) + " TL";
-            } else { resultField.innerText = ""; }
-        }
-
-        function updateNews() {
-            const news = [
-                { title: "2026 Altın Tahminleri", link: "blog.html" },
-                { title: "Halka Arz Rehberi 2026", link: "halka-arz-takvimi.html" },
-                { title: "Bitcoin Analizi", link: "blog.html" }
-            ];
-            document.getElementById('news-container').innerHTML = news.map(n => 
-                `<div class="mb-2 border-bottom pb-1"><a href="${n.link}" class="text-decoration-none text-dark small fw-bold">${n.title}</a></div>`
-            ).join('');
-        }
-
-        // Инициализация при загрузке
-        window.onload = () => {
-            const savedTheme = localStorage.getItem('borsaTR-theme') || 'light';
-            applyTheme(savedTheme);
-            updateDashboard();
-            updateNews();
-        };
-
-        // Слушатель кнопки темы
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+// 3. Загрузка графика (с проверкой на наличие контейнера)
+function loadChart(symbol = 'BINANCE:BTCUSDT', theme = 'light') {
+    const container = document.getElementById('tradingview_main');
+    if (container && typeof TradingView !== 'undefined') {
+        container.innerHTML = ""; // Очищаем перед пересозданием
+        new TradingView.widget({
+            "autosize": true, 
+            "symbol": symbol, 
+            "interval": "D", 
+            "timezone": "Europe/Istanbul",
+            "theme": theme, 
+            "style": "1", 
+            "locale": "tr", 
+            "container_id": "tradingview_main"
         });
+    }
+}
+
+// 4. Обновление данных (курсы валют)
+async function updateDashboard() {
+    try {
+        const res = await fetch('https://open.er-api.com/v6/latest/USD');
+        const data = await res.json();
+        currentRates = data.rates;
         
-        // Виджет погоды
-        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+        document.getElementById('usd-try').innerText = data.rates.TRY.toFixed(2) + " TL";
+        document.getElementById('eur-try').innerText = (data.rates.TRY / data.rates.EUR).toFixed(2) + " TL";
+        document.getElementById('eur-usd').innerText = (1 / data.rates.EUR).toFixed(4);
+        
+        const goldGram = (2150 / 31.1035) * data.rates.TRY;
+        document.getElementById('gold-price').innerText = Math.round(goldGram).toLocaleString('tr-TR') + " TL";
+
+        const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+        const btcData = await btcRes.json();
+        btcPriceGlobal = btcData.bitcoin.usd;
+        document.getElementById('btc-price').innerText = "$" + btcPriceGlobal.toLocaleString();
+
+        document.getElementById('daily-summary').innerText = `Piyasa Özeti: Dolar ${data.rates.TRY.toFixed(2)} TL, Altın ${Math.round(goldGram)} TL, Bitcoin ${btcPriceGlobal.toLocaleString()} dolar.`;
+    } catch (e) { 
+        console.error("API Hatası:", e); 
+    }
+}
+
+// Кнопки переключения графиков
+function changeChart(symbol) {
+    const theme = document.documentElement.getAttribute('data-theme') || 'light';
+    document.getElementById('btn-btc').classList.toggle('active', symbol === 'BINANCE:BTCUSDT');
+    document.getElementById('btn-gold').classList.toggle('active', symbol === 'OANDA:XAUUSD');
+    loadChart(symbol, theme);
+}
+
+// Новости и калькулятор (оставь как было)
+function updateNews() {
+    const news = [
+        { title: "2026 Altın Tahminleri", link: "blog.html" },
+        { title: "Halka Arz Rehberi 2026", link: "halka-arz-takvimi.html" },
+        { title: "Bitcoin Analizi", link: "blog.html" }
+    ];
+    document.getElementById('news-container').innerHTML = news.map(n => 
+        `<div class="mb-2 border-bottom pb-1"><a href="${n.link}" class="text-decoration-none text-dark small fw-bold">${n.title}</a></div>`
+    ).join('');
+}
+
+// Запуск всего процесса
+window.onload = () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(currentTheme);
+    updateDashboard();
+    updateNews();
+    setTimeout(() => loadChart('BINANCE:BTCUSDT', currentTheme), 500);
+};
+
+// Слушатель кнопки темы
+document.getElementById('theme-toggle').addEventListener('click', () => {
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(theme);
+});
