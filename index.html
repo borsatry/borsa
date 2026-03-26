@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="BorsaTR: Canlı borsa takibi, altın hesaplama, mevduat faizi ve kredi hesaplama araçları. 2026 güncel halka arz takvimi ve finans haberleri.">
-    <meta name="keywords" content="borsa takibi, canlı altın, halka arz takvimi, kredi hesaplama, mevduat faizi, finans haberleri">
+    <meta name="description" content="BorsaTR: Canlı borsa takibi, altın hesaplama и finans haberleri.">
+    <meta name="keywords" content="borsa takibi, canlı altın, halka arz takvimi, finans haberleri">
     <meta name="author" content="BorsaTR">
     <title>BorsaTR | Finans, Grafik ve Haberler</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,7 +12,7 @@
     <style>
         :root { --main-blue: #1e3c72; --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #2d3436; }
         [data-theme="dark"] { --bg-color: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; }
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; transition: 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; transition: 0.3s; margin: 0; padding: 0; }
         .header-section { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 3rem 0; margin-bottom: 2rem; }
         .card { background-color: var(--card-bg); color: var(--text-color); border: none; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .val-text { font-size: 1.3rem; font-weight: 800; }
@@ -21,6 +21,7 @@
     </style>
 </head>
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2 shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.html">BorsaTR</a>
@@ -114,16 +115,15 @@
                 </div>
 
                 <div class="card p-4 mt-4">
-                    <h5><i class="fas fa-calculator me-2"></i>Döviz ve Altın Çевirici</h5>
+                    <h5><i class="fas fa-calculator me-2"></i>Döviz и Altın Çevirici</h5>
                     <hr>
                     <div class="row g-2">
                         <div class="col-7"><input type="number" id="convertAmount" class="form-control" placeholder="Miktar" oninput="convertCurrency()"></div>
                         <div class="col-5">
                             <select id="fromCurrency" class="form-select" onchange="convertCurrency()">
-                                <option value="TRY">TRY (Türk Lirası)</option>
-                                <option value="USD">USD (Amerikan Doları)</option>
-                                <option value="EUR">EUR (Euro)</option>
-                                <option value="GBP">GBP (İngiliz Sterlini)</option>
+                                <option value="TRY">TRY</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
                                 <option value="XAU">Gram Altın</option>
                                 <option value="BTC">Bitcoin</option>
                             </select>
@@ -143,15 +143,12 @@
                     <h5 class="mb-3"><i class="fas fa-gauge-high me-2 text-warning"></i>Kripto Korku ve Açgözlülük</h5>
                     <div class="text-center">
                         <img src="https://alternative.me/crypto/fear-and-greed-index.png" alt="Index" class="img-fluid rounded-3 shadow-sm">
-                        <p class="text-muted small mt-2">Piyasadaki duygusal durum (0-100).</p>
                     </div>
                 </div>
 
                 <div class="card p-3 mt-3">
                     <h5 class="mb-3"><i class="fas fa-cloud-sun me-2 text-info"></i>Hava Durumu</h5>
-                    <div id="weather-widget">
-                        <a class="weatherwidget-io" href="https://forecast7.com/tr/41d0128d98/istanbul/" data-label_1="İSTANBUL" data-label_2="HAVA DURUMU" data-theme="pure">İSTANBUL HAVA DURUMU</a>
-                    </div>
+                    <a class="weatherwidget-io" href="https://forecast7.com/tr/41d0128d98/istanbul/" data-label_1="İSTANBUL" data-label_2="HAVA DURUMU" data-theme="pure">İSTANBUL HAVA DURUMU</a>
                 </div>
             </div>
         </div>
@@ -160,4 +157,86 @@
     <footer class="text-center py-4 text-muted small">
         &copy; 2026 BorsaTR - Tüm Hakları Saklıdır.
     </footer>
-    </body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        let currentRates = { TRY: 0, EUR: 0, USD: 1 };
+        let btcPriceGlobal = 0;
+
+        function loadChart(symbol = 'BINANCE:BTCUSDT') {
+            if (typeof TradingView !== 'undefined') {
+                new TradingView.widget({
+                    "autosize": true, "symbol": symbol, "interval": "D", "timezone": "Europe/Istanbul",
+                    "theme": "light", "style": "1", "locale": "tr", "container_id": "tradingview_main"
+                });
+            }
+        }
+
+        function changeChart(symbol) {
+            document.getElementById('btn-btc').classList.toggle('active', symbol === 'BINANCE:BTCUSDT');
+            document.getElementById('btn-gold').classList.toggle('active', symbol === 'OANDA:XAUUSD');
+            loadChart(symbol);
+        }
+
+        async function updateDashboard() {
+            try {
+                const res = await fetch('https://open.er-api.com/v6/latest/USD');
+                const data = await res.json();
+                currentRates = data.rates;
+                
+                document.getElementById('usd-try').innerText = data.rates.TRY.toFixed(2) + " TL";
+                document.getElementById('eur-try').innerText = (data.rates.TRY / data.rates.EUR).toFixed(2) + " TL";
+                document.getElementById('eur-usd').innerText = (1 / data.rates.EUR).toFixed(4);
+                
+                const goldGram = (2150 / 31.1035) * data.rates.TRY;
+                document.getElementById('gold-price').innerText = Math.round(goldGram).toLocaleString('tr-TR') + " TL";
+
+                const btcRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+                const btcData = await btcRes.json();
+                btcPriceGlobal = btcData.bitcoin.usd;
+                document.getElementById('btc-price').innerText = "$" + btcPriceGlobal.toLocaleString();
+
+                document.getElementById('daily-summary').innerText = `Piyasa Özeti: Dolar ${data.rates.TRY.toFixed(2)} TL, Altın ${Math.round(goldGram)} TL, Bitcoin ${btcPriceGlobal.toLocaleString()} dolar.`;
+            } catch (e) { console.error("Data error:", e); }
+        }
+
+        function convertCurrency() {
+            const amount = document.getElementById('convertAmount').value;
+            const from = document.getElementById('fromCurrency').value;
+            const resultField = document.getElementById('result-display');
+            if (amount > 0 && currentRates.TRY) {
+                let valInUsd = 0;
+                if(from === "TRY") valInUsd = amount / currentRates.TRY;
+                else if(from === "USD") valInUsd = amount;
+                else if(from === "EUR") valInUsd = amount / currentRates.EUR;
+                else if(from === "BTC") valInUsd = amount * btcPriceGlobal;
+                else if(from === "XAU") valInUsd = amount * (2150 / 31.1035);
+                
+                const final = valInUsd * currentRates.TRY;
+                resultField.innerText = "= " + final.toLocaleString('tr-TR', { maximumFractionDigits: 2 }) + " TL";
+            } else { resultField.innerText = ""; }
+        }
+
+        function updateNews() {
+            const news = [
+                { title: "2026 Altın Tahminleri", link: "blog.html" },
+                { title: "Halka Arz Rehberi 2026", link: "halka-arz-takvimi.html" },
+                { title: "Bitcoin Analizi", link: "blog.html" }
+            ];
+            document.getElementById('news-container').innerHTML = news.map(n => 
+                `<div class="mb-2 border-bottom pb-1"><a href="${n.link}" class="text-decoration-none text-dark small fw-bold">${n.title}</a></div>`
+            ).join('');
+        }
+
+        window.onload = () => {
+            updateDashboard();
+            updateNews();
+            setTimeout(() => loadChart(), 800);
+        };
+        
+        // Погода
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+    </script>
+</body>
+</html>
